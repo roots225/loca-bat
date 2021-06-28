@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 
+use App\Http\Resources\UserResource;
+
 class UserController extends ApiController
 {
     /**
@@ -15,7 +17,7 @@ class UserController extends ApiController
      */
     public function index()
     {
-        //
+        return UserResource::collection(User::All());
     }
 
     /**
@@ -34,9 +36,13 @@ class UserController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(\App\Http\Requests\StoreUserRequest $request)
     {
-        //
+        $user = new User();
+        $user->fill($request->all());
+        $user->save();
+
+        return $this->successResponse(new UserResource($user));
     }
 
     /**
@@ -70,7 +76,10 @@ class UserController extends ApiController
      */
     public function update(Request $request, User $user)
     {
-        //
+        $user->fill($request->all());
+        $user->update();
+
+        return $this->successResponse(new UserResource($user));
     }
 
     /**
@@ -81,6 +90,6 @@ class UserController extends ApiController
      */
     public function destroy(User $user)
     {
-        //
+        return $this->deleteEntity($user);
     }
 }

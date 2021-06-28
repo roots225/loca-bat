@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Owner;
 use Illuminate\Http\Request;
 
+use App\Http\Resources\OwnerResource;
+
 class OwnerController extends ApiController
 {
     /**
@@ -15,7 +17,7 @@ class OwnerController extends ApiController
      */
     public function index()
     {
-        //
+        return OwnerResource::collection(Owner::All());
     }
 
     /**
@@ -34,9 +36,13 @@ class OwnerController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(\App\Http\Requests\StoreOwnerRequest $request)
     {
-        //
+        $owner = new Owner();
+        $owner->fill($request);
+        $owner->save();
+
+        return $this->successResponse(new OwnerResource($owner));
     }
 
     /**
@@ -68,9 +74,12 @@ class OwnerController extends ApiController
      * @param  \App\Owner  $owner
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Owner $owner)
+    public function update(\App\Http\UpdateOwnerRequest $request, Owner $owner)
     {
-        //
+        $owner->fill($request);
+        $owner->update();
+
+        return $this->successResponse(new OwnerResource($owner));
     }
 
     /**
@@ -81,6 +90,6 @@ class OwnerController extends ApiController
      */
     public function destroy(Owner $owner)
     {
-        //
+        return $this->deleteEntity($owner);
     }
 }

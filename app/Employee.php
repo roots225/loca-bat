@@ -9,4 +9,6 @@ class Employee extends Model
     protected $fillable = [
         'agency_id', 'user_id'
     ];
+
+    public $table = 'agency_employees';
 }

@@ -14,8 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/v1/login', 'V1\AuthController@login')->name('login');
+Route::group(['prefix' => 'v1'], function() {
+    Route::post('/login', 'V1\AuthController@login')->name('login');
+});
 
-Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function() {
-    Route::resource('user', 'V1\UserController');
+Route::group(['prefix' => 'v1'], function() {
+    Route::resource('users', 'V1\UserController');
+    Route::resource('owners', 'V1\OwnerController');
+    Route::resource('agencies', 'V1\AgencyController');
+    Route::resource('tenants', 'V1\TenantController');
+    Route::resource('employees', 'V1\EmployeeController');
+    Route::resource('properties', 'V1\PropertyController');
 });

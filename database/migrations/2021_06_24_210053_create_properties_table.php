@@ -19,7 +19,7 @@ class CreatePropertiesTable extends Migration
             $table->string('type');
             $table->string('description');
             $table->unsignedBigInteger('owner_id')->nullable();
-            $tbale->unsignedBigInteger('tenant_id')->nullable();
+            $table->unsignedBigInteger('tenant_id')->nullable();
             $table->float('pricePerMonth');
             $table->integer('rent_deposit')->default(3);
             $table->integer('rent_advance')->default(2);

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Property;
 use Illuminate\Http\Request;
 
+use App\Http\Resources\PropertyResource;
+
 class PropertyController extends ApiController
 {
     /**
@@ -15,7 +17,7 @@ class PropertyController extends ApiController
      */
     public function index()
     {
-        //
+        return PropertyResource::collection(Property::All());
     }
 
     /**
@@ -34,9 +36,13 @@ class PropertyController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(\App\Http\Requests\StorePropertyRequest $request)
     {
-        //
+        $property = new Property();
+        $property->fill($request->all());
+        $property->save();
+
+        return $this->successResponse(new PropertyResource($property));
     }
 
     /**
@@ -68,9 +74,12 @@ class PropertyController extends ApiController
      * @param  \App\Property  $property
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Property $property)
+    public function update(\App\Htt\UpdatePropertyRequest $request, Property $property)
     {
-        //
+        $property->fill($request->all());
+        $property->update();
+
+        return $this->successResponse(new PropertyResource($property));
     }
 
     /**
@@ -81,6 +90,6 @@ class PropertyController extends ApiController
      */
     public function destroy(Property $property)
     {
-        //
+        return $this->deleteEntity($property);
     }
 }

@@ -6,6 +6,8 @@ use App\Employee;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Http\Resources\EmployeeResource;
+
 class EmployeeController extends ApiController
 {
     /**
@@ -15,7 +17,7 @@ class EmployeeController extends ApiController
      */
     public function index()
     {
-        //
+        return EmployeeResource::collection(Employee::All());
     }
 
     /**
@@ -34,9 +36,13 @@ class EmployeeController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(\App\Http\Requests\StoreEmployeeRequest $request)
     {
-        //
+        $employee = new Employee();
+        $employee->fill($request->all());
+        $employee->save();
+
+        return $this->successResponse(new EmployeeResource($employee));
     }
 
     /**
@@ -68,9 +74,12 @@ class EmployeeController extends ApiController
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Employee $employee)
+    public function update(\App\Http\Requests\UpdateEmployeeRequest $request, Employee $employee)
     {
-        //
+        $employee->fill($request->all());
+        $employee->update();
+
+        return $this->successResponse(new EmployeeResource($employee));
     }
 
     /**
@@ -81,6 +90,6 @@ class EmployeeController extends ApiController
      */
     public function destroy(Employee $employee)
     {
-        //
+        return $this->deleteEntity($employee);
     }
 }

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Tenant;
 use Illuminate\Http\Request;
 
+use App\Http\Resources\TenantResource;
+
 class TenantController extends ApiController
 {
     /**
@@ -15,7 +17,7 @@ class TenantController extends ApiController
      */
     public function index()
     {
-        //
+        return TenantResource::collection(Tenant::All());
     }
 
     /**
@@ -34,9 +36,13 @@ class TenantController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(\App\Http\Requests\StoreTenantRequest $request)
     {
-        //
+        $tenant = new Tenant();
+        $tenant->fill($request->all());
+        $tenant->save();
+
+        return $this->successResponse(new TenantResource($tenant));
     }
 
     /**
@@ -70,7 +76,10 @@ class TenantController extends ApiController
      */
     public function update(Request $request, Tenant $tenant)
     {
-        //
+        $tenant->fill($request->all());
+        $tenant->update();
+
+        return $this->successResponse(new TenantResource($tenant));
     }
 
     /**
@@ -81,6 +90,6 @@ class TenantController extends ApiController
      */
     public function destroy(Tenant $tenant)
     {
-        //
+        return $this->deleteEntity($tenant);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Agency;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Resources\AgencyResource;
 
 class AgencyController extends ApiController
 {
@@ -15,7 +16,7 @@ class AgencyController extends ApiController
      */
     public function index()
     {
-        //
+        return AgencyResource::collection(Agency::All());
     }
 
     /**
@@ -34,9 +35,13 @@ class AgencyController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(\App\Http\Requests\StoreAgencyRequest $request)
     {
-        //
+        $agency = new Agency();
+        $agency->fill($request->all());
+        $agency->save();
+
+        return $this->successResponse(new AgencyResource($agency));
     }
 
     /**
@@ -47,7 +52,7 @@ class AgencyController extends ApiController
      */
     public function show(Agency $agency)
     {
-        //
+        return new AgencyResource($agency);
     }
 
     /**
@@ -68,9 +73,12 @@ class AgencyController extends ApiController
      * @param  \App\Agency  $agency
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Agency $agency)
+    public function update(\App\Http\Requests\UpdateAgencyRequest $request, Agency $agency)
     {
-        //
+        $agency->fill($request->all());
+        $agency->update();
+
+        return $this->successResponse(new AgencyResource($agency));
     }
 
     /**
@@ -81,6 +89,6 @@ class AgencyController extends ApiController
      */
     public function destroy(Agency $agency)
     {
-        //
+        return $this->deleteEntity($agency);
     }
 }
